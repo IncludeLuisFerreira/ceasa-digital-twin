@@ -45,17 +45,19 @@ export function createJourney(
   const tDepart = tFinish + g3;
   const tClean = tDepart + g4;
 
+  const truckId = `${placa}-${startTime}`;
+
   const mk = (type: Event['type'], simTime: number, extra: Partial<Event> = {}): Event => ({
-    id: `${type}-${placa}-${simTime}`,
+    id: `${type}-${truckId}-${simTime}`,
     simTime,
     type,
-    truckId: placa,
+    truckId,
     boxId: bayId,
     ...extra,
   });
 
   const events: Event[] = [
-    mk('TRUCK_ARRIVED', tArrive, { meta: { produto: produto.nome } }),
+    mk('TRUCK_ARRIVED', tArrive, { meta: { produto: produto.nome, placa } }),
     mk('WEIGHED', tWeigh, { meta: { produto: produto.nome, volumeTon: volume } }),
     mk('UNLOADING_STARTED', tStart, { meta: { produto: produto.nome } }),
     mk('UNLOADING_FINISHED', tFinish),

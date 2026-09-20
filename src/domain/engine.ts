@@ -70,6 +70,7 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
       if (event.truckId) {
         trucks[event.truckId] = {
           id: event.truckId,
+          placa: event.meta?.placa ?? event.truckId,
           produto: event.meta?.produto ?? 'Tomate',
           estado: 'chegou',
           volumeTon: 0,
