@@ -8,10 +8,12 @@ import ExportButtons, { type ReportRow } from './ExportButtons';
 
 function buildRow(b: Bay, world: WorldState): ReportRow {
   const produto = b.produto ?? '—';
-  const base = PRODUTOS.find((p) => p.nome === produto)?.precoBase ?? 0;
+  const item = PRODUTOS.find((p) => p.nome === produto);
+  const base = item?.precoBase ?? 0;
+  const procedencia = item?.procedencia ?? '—';
   const preco = world.precos[produto] ?? base;
   const variacao = base > 0 ? ((preco - base) / base) * 100 : 0;
-  return { box: b.id, produto, preco, variacao, tempoMin: b.tempoOcupacaoMin ?? 0 };
+  return { box: b.id, produto, procedencia, preco, variacao, tempoMin: b.tempoOcupacaoMin ?? 0 };
 }
 
 export default function ReportModal() {
@@ -78,6 +80,7 @@ export default function ReportModal() {
                 <tr className="border-b border-line text-[10px] uppercase tracking-wide text-ink-soft">
                   <th className="py-2">Box</th>
                   <th className="py-2">Produto Principal</th>
+                  <th className="py-2">Procedência</th>
                   <th className="py-2 text-right">Preço Médio/kg</th>
                   <th className="py-2 text-right">Variação vs. Ontem</th>
                   <th className="py-2 text-right">Tempo de Ocupação</th>
@@ -88,6 +91,7 @@ export default function ReportModal() {
                   <tr key={r.box} className="border-b border-slate-100">
                     <td className="py-2 font-bold">{r.box}</td>
                     <td className="py-2">{r.produto}</td>
+                    <td className="py-2 text-ink-soft">{r.procedencia}</td>
                     <td className="py-2 text-right tabular-nums">R$ {r.preco.toFixed(2)}</td>
                     <td
                       className={`py-2 text-right font-bold tabular-nums ${
@@ -101,7 +105,7 @@ export default function ReportModal() {
                 ))}
                 {rows.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-ink-soft">
+                    <td colSpan={6} className="py-8 text-center text-ink-soft">
                       Nenhum box ocupado no momento.
                     </td>
                   </tr>

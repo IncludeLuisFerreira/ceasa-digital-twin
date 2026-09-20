@@ -5,19 +5,19 @@ export default function KpiRow() {
   const kpis = useKpis();
   const cards = [
     {
-      label: 'Taxa de Ocupação Geral',
+      label: 'Taxa de Ocupação dos Boxes',
       value: `${kpis.ocupacaoPct}%`,
       icon: Gauge,
       tone: 'text-[#2563EB]',
     },
     {
-      label: 'Boxes com Alerta de Permanência',
+      label: 'Boxes com Ocorrência CV',
       value: String(kpis.alertas),
       icon: AlertTriangle,
       tone: 'text-[#F59E0B]',
     },
     {
-      label: 'Volume Estimado de Descarga (ton)',
+      label: 'Volume Ofertado no Turno (ton)',
       value: String(kpis.volumeTon),
       icon: Truck,
       tone: 'text-[#10B981]',

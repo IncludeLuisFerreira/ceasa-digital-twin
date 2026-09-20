@@ -73,6 +73,7 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
           id: event.truckId,
           placa: event.meta?.placa ?? event.truckId,
           produto: event.meta?.produto ?? 'Tomate',
+          procedencia: event.meta?.procedencia ?? '—',
           estado: 'chegou',
           volumeTon: 0,
         };

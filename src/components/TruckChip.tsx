@@ -8,7 +8,7 @@ const TONE: Record<Truck['estado'], string> = {
 };
 
 const LABEL: Record<Truck['estado'], string> = {
-  chegou: 'chegou',
+  chegou: 'na portaria',
   pesando: 'na balança',
   descarregando: 'descarregando',
   saindo: 'saindo',

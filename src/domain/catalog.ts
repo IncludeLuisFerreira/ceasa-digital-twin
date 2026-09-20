@@ -1,18 +1,18 @@
-export type Produto = { nome: string; precoBase: number };
+export type Produto = { nome: string; precoBase: number; procedencia: string };
 
 export const PRODUTOS: Produto[] = [
-  { nome: 'Tomate', precoBase: 4.8 },
-  { nome: 'Batata', precoBase: 3.1 },
-  { nome: 'Cebola', precoBase: 5.25 },
-  { nome: 'Cenoura', precoBase: 2.95 },
-  { nome: 'Mandioca', precoBase: 3.6 },
-  { nome: 'Banana', precoBase: 3.9 },
-  { nome: 'Laranja', precoBase: 2.4 },
-  { nome: 'Repolho', precoBase: 2.1 },
-  { nome: 'Alface', precoBase: 1.8 },
-  { nome: 'Pimentão', precoBase: 6.2 },
-  { nome: 'Chuchu', precoBase: 2.3 },
-  { nome: 'Abobrinha', precoBase: 3.4 },
+  { nome: 'Tomate', precoBase: 4.8, procedencia: 'Petrolina/PE' },
+  { nome: 'Batata', precoBase: 3.1, procedencia: 'Vargem Grande do Sul/SP' },
+  { nome: 'Cebola', precoBase: 5.25, procedencia: 'Piedade/SP' },
+  { nome: 'Cenoura', precoBase: 2.95, procedencia: 'Carandaí/MG' },
+  { nome: 'Mandioca', precoBase: 3.6, procedencia: 'Tupã/SP' },
+  { nome: 'Banana', precoBase: 3.9, procedencia: 'Jaíba/MG' },
+  { nome: 'Laranja', precoBase: 2.4, procedencia: 'Bebedouro/SP' },
+  { nome: 'Repolho', precoBase: 2.1, procedencia: 'Piedade/SP' },
+  { nome: 'Alface', precoBase: 1.8, procedencia: 'Holambra/SP' },
+  { nome: 'Pimentão', precoBase: 6.2, procedencia: 'Holambra/SP' },
+  { nome: 'Chuchu', precoBase: 2.3, procedencia: 'Mogi das Cruzes/SP' },
+  { nome: 'Abobrinha', precoBase: 3.4, procedencia: 'Mogi das Cruzes/SP' },
 ];
 
 export const SECTOR_BAY_COUNT = 12;

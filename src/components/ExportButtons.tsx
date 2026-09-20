@@ -1,6 +1,7 @@
 export type ReportRow = {
   box: string;
   produto: string;
+  procedencia: string;
   preco: number;
   variacao: number;
   tempoMin: number;
@@ -11,12 +12,20 @@ export default function ExportButtons({ rows }: { rows: ReportRow[] }) {
     const header = [
       'Box',
       'Produto Principal',
+      'Procedencia',
       'Preco Medio/kg',
       'Variacao vs Ontem (%)',
       'Tempo de Ocupacao (min)',
     ];
     const lines = rows.map((r) =>
-      [r.box, r.produto, r.preco.toFixed(2), r.variacao.toFixed(1), String(r.tempoMin)].join(';'),
+      [
+        r.box,
+        r.produto,
+        r.procedencia,
+        r.preco.toFixed(2),
+        r.variacao.toFixed(1),
+        String(r.tempoMin),
+      ].join(';'),
     );
     const csv = [header.join(';'), ...lines].join('\n');
     const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });

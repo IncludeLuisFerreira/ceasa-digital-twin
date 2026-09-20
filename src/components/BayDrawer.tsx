@@ -4,7 +4,11 @@ import { formatClock, formatTempo } from '../domain/engine';
 import { EVENT_DOT, describeEvent } from '../domain/descriptions';
 import { useTwin, useTwinDispatch } from '../state/TwinContext';
 
-const LABEL = { livre: 'Livre', ocupado: 'Ocupado', alerta: 'Alerta CV' } as const;
+const LABEL = {
+  livre: 'Box disponível',
+  ocupado: 'Em comercialização',
+  alerta: 'Ocorrência CV',
+} as const;
 
 export default function BayDrawer() {
   const { world, selectedBayId, reportOpen } = useTwin();
@@ -29,6 +33,7 @@ export default function BayDrawer() {
 
   if (!selectedBayId) return null;
   const bay = world.bays[selectedBayId];
+  const truck = bay.truckId ? world.trucks[bay.truckId] : undefined;
   const timeline = world.events.filter((e) => e.boxId === selectedBayId).slice().reverse();
 
   return (
@@ -59,19 +64,17 @@ export default function BayDrawer() {
           </button>
         </div>
         <div className="grid grid-cols-2 gap-3 border-b border-line px-5 py-4 text-xs">
+          <Info label="Produtor" value={truck ? truck.placa : '—'} />
+          <Info label="Procedência" value={truck ? truck.procedencia : '—'} />
           <Info
-            label="Veículo"
-            value={bay.truckId ? (world.trucks[bay.truckId]?.placa ?? bay.truckId) : '—'}
-          />
-          <Info
-            label="Tempo de ocupação"
+            label="Tempo em comercialização"
             value={bay.status === 'livre' ? '—' : formatTempo(bay.tempoOcupacaoMin ?? 0)}
           />
           <Info
-            label="Início da ocupação"
+            label="Início da comercialização"
             value={bay.ocupacaoInicio !== undefined ? formatClock(bay.ocupacaoInicio) : '—'}
           />
-          <Info label="Alerta" value={bay.alertaMotivo ?? '—'} />
+          <Info label="Ocorrência" value={bay.alertaMotivo ?? '—'} />
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4">
           <h4 className="mb-3 text-[11px] font-bold uppercase tracking-wide text-ink-soft">

@@ -56,7 +56,9 @@ export function createJourney(
   });
 
   const events: Event[] = [
-    mk('TRUCK_ARRIVED', tArrive, { meta: { produto: produto.nome, placa } }),
+    mk('TRUCK_ARRIVED', tArrive, {
+      meta: { produto: produto.nome, placa, procedencia: produto.procedencia },
+    }),
     mk('WEIGHED', tWeigh, { meta: { produto: produto.nome, volumeTon: volume } }),
     mk('UNLOADING_STARTED', tStart, { meta: { produto: produto.nome } }),
     mk('UNLOADING_FINISHED', tFinish, { meta: { volumeTon: volume } }),

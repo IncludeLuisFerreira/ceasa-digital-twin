@@ -1,6 +1,6 @@
 import { formatTempo } from '../domain/engine';
 import type { Bay } from '../domain/types';
-import { useTwinDispatch } from '../state/TwinContext';
+import { useTwin, useTwinDispatch } from '../state/TwinContext';
 
 const CORES: Record<Bay['status'], string> = {
   livre: 'bg-[#10B981] hover:bg-emerald-600',
@@ -9,13 +9,15 @@ const CORES: Record<Bay['status'], string> = {
 };
 
 const LABEL: Record<Bay['status'], string> = {
-  livre: 'Livre',
-  ocupado: 'Ocupado',
-  alerta: 'Alerta CV',
+  livre: 'Box disponível',
+  ocupado: 'Em comercialização',
+  alerta: 'Ocorrência CV',
 };
 
 export default function BayBox({ bay }: { bay: Bay }) {
   const dispatch = useTwinDispatch();
+  const { world } = useTwin();
+  const truck = bay.truckId ? world.trucks[bay.truckId] : undefined;
   return (
     <div className="group relative">
       <button
@@ -26,9 +28,9 @@ export default function BayBox({ bay }: { bay: Bay }) {
         <span className="text-[11px] font-extrabold">{bay.id}</span>
         <span className="mt-1 text-[9px] font-semibold opacity-95">
           {bay.status === 'livre'
-            ? 'Livre'
+            ? 'Vago'
             : bay.status === 'alerta'
-              ? 'Alerta'
+              ? 'Ocorrência'
               : formatTempo(bay.tempoOcupacaoMin ?? 0)}
         </span>
       </button>
@@ -37,10 +39,11 @@ export default function BayBox({ bay }: { bay: Bay }) {
           Box {bay.id} · {LABEL[bay.status]}
         </div>
         {bay.produto && <div className="text-slate-300">Produto: {bay.produto}</div>}
-        {bay.truckId && <div className="text-slate-300">Veículo: {bay.truckId}</div>}
+        {truck && <div className="text-slate-300">Produtor: {truck.placa}</div>}
+        {truck && <div className="text-slate-300">Procedência: {truck.procedencia}</div>}
         {bay.status !== 'livre' && (
           <div className="text-amber-300">
-            Ocupação: {formatTempo(bay.tempoOcupacaoMin ?? 0)}
+            Em comercialização: {formatTempo(bay.tempoOcupacaoMin ?? 0)}
           </div>
         )}
         {bay.alertaMotivo && <div className="text-amber-300">⚠ {bay.alertaMotivo}</div>}

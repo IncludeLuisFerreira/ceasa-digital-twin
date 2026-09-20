@@ -9,13 +9,13 @@ export default function FloorPlan() {
     <section className="rounded-lg border border-line/70 bg-white p-4 shadow-sm">
       <div className="mb-3 grid grid-cols-3 gap-2 text-[11px] font-bold">
         <div className="rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-blue-700">
-          Portaria 1 · Balança
+          Portaria do Produtor · Balança
         </div>
         <div className="rounded-md border border-dashed border-amber-300 bg-amber-50 px-3 py-1.5 text-center text-amber-700">
-          Área de giro
+          Área de manobra
         </div>
         <div className="rounded-md border border-line bg-slate-50 px-3 py-1.5 text-right text-ink-soft">
-          Portaria 2
+          Portaria de Saída
         </div>
       </div>
       <div className="rounded-md bg-[#F1F5F9] p-3">

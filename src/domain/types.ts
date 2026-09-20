@@ -27,6 +27,7 @@ export type Event = {
     volumeTon?: number;
     online?: boolean;
     placa?: string;
+    procedencia?: string;
   };
 };
 
@@ -48,6 +49,7 @@ export type Truck = {
   id: string;
   placa: string;
   produto: string;
+  procedencia: string;
   estado: TruckState;
   boxId?: string;
   volumeTon: number;
