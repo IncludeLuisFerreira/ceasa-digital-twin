@@ -1,4 +1,4 @@
-import { BAY_IDS, PLACAS, PRODUTOS } from './catalog';
+import { BAY_IDS, PRODUTORES, PRODUTOS } from './catalog';
 import { pick, randomInt, nextRandom } from './rng';
 import type { Event, WorldState } from './types';
 
@@ -12,7 +12,7 @@ export function createJourney(
 
   const [produto, r1] = pick(r, PRODUTOS);
   r = r1;
-  const [placa, r2] = pick(r, PLACAS);
+  const [produtor, r2] = pick(r, PRODUTORES);
   r = r2;
 
   const livres = BAY_IDS.filter(
@@ -44,7 +44,7 @@ export function createJourney(
   const tDepart = tFinish + g3;
   const tClean = tDepart + g4;
 
-  const truckId = `${placa}-${startTime}`;
+  const truckId = `${produtor}-${startTime}`;
 
   const mk = (type: Event['type'], simTime: number, extra: Partial<Event> = {}): Event => ({
     id: `${type}-${truckId}-${simTime}`,
@@ -57,7 +57,7 @@ export function createJourney(
 
   const events: Event[] = [
     mk('TRUCK_ARRIVED', tArrive, {
-      meta: { produto: produto.nome, placa, procedencia: produto.procedencia },
+      meta: { produto: produto.nome, produtor, procedencia: produto.procedencia },
     }),
     mk('WEIGHED', tWeigh, { meta: { produto: produto.nome, volumeTon: volume } }),
     mk('UNLOADING_STARTED', tStart, { meta: { produto: produto.nome } }),

@@ -64,7 +64,7 @@ export default function BayDrawer() {
           </button>
         </div>
         <div className="grid grid-cols-2 gap-3 border-b border-line px-5 py-4 text-xs">
-          <Info label="Produtor" value={truck ? truck.placa : '—'} />
+          <Info label="Produtor" value={truck ? truck.produtor : '—'} />
           <Info label="Procedência" value={truck ? truck.procedencia : '—'} />
           <Info
             label="Tempo em comercialização"

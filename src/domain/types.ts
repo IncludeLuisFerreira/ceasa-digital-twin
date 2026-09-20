@@ -26,7 +26,7 @@ export type Event = {
     motivo?: string;
     volumeTon?: number;
     online?: boolean;
-    placa?: string;
+    produtor?: string;
     procedencia?: string;
   };
 };
@@ -47,7 +47,7 @@ export type TruckState = 'chegou' | 'pesando' | 'descarregando' | 'saindo';
 
 export type Truck = {
   id: string;
-  placa: string;
+  produtor: string;
   produto: string;
   procedencia: string;
   estado: TruckState;

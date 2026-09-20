@@ -23,15 +23,27 @@ export const BAY_IDS: string[] = SETORES.flatMap((setor) =>
   Array.from({ length: SECTOR_BAY_COUNT }, (_, i) => `${setor}${String(i + 1).padStart(2, '0')}`),
 );
 
-export const PLACAS = [
-  'PXR-2A41',
-  'QWE-1B22',
-  'JKL-9C88',
-  'MNO-4D77',
-  'TUV-7E15',
-  'GHI-3F90',
-  'ABC-5G33',
-  'DEF-8H62',
+export const PRODUTORES = [
+  'João Batista',
+  'Maria Aparecida',
+  'Sebastião Ferreira',
+  'Antônio Carlos',
+  'Rosa Maria',
+  'José Bonifácio',
+  'Pedro Henrique',
+  'Luís Otávio',
+  'Francisca Alves',
+  'Manoel dos Santos',
+  'Cláudia Regina',
+  'Vera Lúcia',
+  'Carlos Eduardo',
+  'Cooperativa Vale Verde',
+  'Cooperativa Terra Viva',
+  'Associação Serra Azul',
+  'Sítio Boa Esperança',
+  'Fazenda Santa Rita',
+  'Chácara das Flores',
+  'Hortifruti União',
 ];
 
 export function produtoForBay(bayId: string): Produto {

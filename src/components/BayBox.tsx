@@ -39,7 +39,7 @@ export default function BayBox({ bay }: { bay: Bay }) {
           Box {bay.id} · {LABEL[bay.status]}
         </div>
         {bay.produto && <div className="text-slate-300">Produto: {bay.produto}</div>}
-        {truck && <div className="text-slate-300">Produtor: {truck.placa}</div>}
+        {truck && <div className="text-slate-300">Produtor: {truck.produtor}</div>}
         {truck && <div className="text-slate-300">Procedência: {truck.procedencia}</div>}
         {bay.status !== 'livre' && (
           <div className="text-amber-300">

@@ -12,19 +12,19 @@ export const EVENT_DOT: Record<EventType, string> = {
 };
 
 export function describeEvent(e: Event): string {
-  const placa = e.meta?.placa ?? e.truckId?.replace(/-\d+$/, '') ?? '';
+  const produtor = e.meta?.produtor ?? e.truckId?.replace(/-\d+$/, '') ?? '';
   const procedencia = e.meta?.procedencia ? ` (${e.meta.procedencia})` : '';
   switch (e.type) {
     case 'TRUCK_ARRIVED':
-      return `Chegada do produtor ${placa}${e.meta?.produto ? ` · ${e.meta.produto}` : ''}${procedencia}`;
+      return `Chegada do produtor ${produtor}${e.meta?.produto ? ` · ${e.meta.produto}` : ''}${procedencia}`;
     case 'WEIGHED':
-      return `Pesagem na balança · ${placa} · ${e.meta?.volumeTon ?? 0} t`;
+      return `Pesagem na balança · ${produtor} · ${e.meta?.volumeTon ?? 0} t`;
     case 'UNLOADING_STARTED':
       return `Início da descarga · Box ${e.boxId}`;
     case 'UNLOADING_FINISHED':
       return `Oferta disponível para venda · Box ${e.boxId}`;
     case 'DEPARTED':
-      return `Saída do produtor ${placa}`;
+      return `Saída do produtor ${produtor}`;
     case 'CLEANING_DONE':
       return `Box ${e.boxId} higienizado e disponível`;
     case 'CV_ANOMALY':
