@@ -7,9 +7,10 @@ function ReportButton() {
   return (
     <button
       onClick={() => dispatch({ type: 'TOGGLE_REPORT', open: true })}
-      className="rounded-md bg-[#0F172A] px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#1E293B]"
+      className="w-full rounded-md bg-[#0F172A] px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#1E293B] lg:w-auto"
     >
-      📊 Gerar Relatório de Cotações e Ocupação
+      <span className="lg:hidden">📊 Relatório</span>
+      <span className="hidden lg:inline">📊 Gerar Relatório de Cotações e Ocupação</span>
     </button>
   );
 }
@@ -18,13 +19,13 @@ export default function Header() {
   const { world } = useTwin();
   return (
     <header className="border-b border-line bg-white">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-3">
+      <div className="mx-auto flex max-w-[1400px] flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-3">
-          <div className="grid h-9 w-9 place-items-center rounded-md bg-[#0F172A] text-sm font-extrabold text-white">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-[#0F172A] text-sm font-extrabold text-white">
             CE
           </div>
           <div>
-            <div className="text-sm font-extrabold tracking-tight">
+            <div className="text-[13px] font-extrabold tracking-tight sm:text-sm">
               CEASA <span className="text-[#2563EB]">| Sistema de Inteligência Logística</span>
             </div>
             <div className="text-[11px] text-ink-soft">
@@ -32,7 +33,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <div
             className={`flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold ${
               world.cvOnline
@@ -41,9 +42,14 @@ export default function Header() {
             }`}
           >
             <Radio size={13} />
-            {world.cvOnline
-              ? `Câmeras CV: Online (${Math.round(world.cvPrecisao * 100)}% de precisão) · Última sync: ${world.cvUltimaSyncMin} min atrás`
-              : 'Câmeras CV: Sinal perdido'}
+            <span className="lg:hidden">
+              {world.cvOnline ? 'CV: Online' : 'CV: sinal perdido'}
+            </span>
+            <span className="hidden lg:inline">
+              {world.cvOnline
+                ? `Câmeras CV: Online (${Math.round(world.cvPrecisao * 100)}% de precisão) · Última sync: ${world.cvUltimaSyncMin} min atrás`
+                : 'Câmeras CV: Sinal perdido'}
+            </span>
           </div>
           <div className="flex items-center gap-2 rounded-full border border-line px-3 py-1 text-[11px] font-semibold text-ink">
             <CalendarClock size={13} className="text-ink-soft" />

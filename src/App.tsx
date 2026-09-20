@@ -12,7 +12,7 @@ export default function App() {
     <TwinProvider>
       <div className="min-h-screen bg-canvas font-sans text-ink">
         <Header />
-        <main className="mx-auto max-w-[1400px] space-y-5 px-6 py-5">
+        <main className="mx-auto max-w-[1400px] space-y-4 px-3 py-4 sm:space-y-5 sm:px-6 sm:py-5">
           <KpiRow />
           <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_360px]">
             <div className="space-y-5">

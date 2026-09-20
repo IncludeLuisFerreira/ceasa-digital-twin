@@ -34,41 +34,52 @@ type Action =
   | { type: 'SELECT_BAY'; bayId: string | null }
   | { type: 'TOGGLE_REPORT'; open?: boolean };
 
+const WARMUP_MIN = 180;
+
+function step(state: TwinState, delta: number): TwinState {
+  const newNow = state.world.now + delta;
+  const due = state.queue.filter((e) => e.simTime <= newNow);
+  const remaining = state.queue.filter((e) => e.simTime > newNow);
+
+  let world = applyEvents(state.world, due);
+  world = { ...world, now: newNow };
+  world = updateTempos(world);
+  const [limited] = enforceLimits(world);
+  world = limited;
+
+  let rng = state.rng;
+  const [precos, r1] = driftPrecos(world, rng);
+  rng = r1;
+  const novoTurno = deriveTurno(newNow);
+  world = {
+    ...world,
+    precos,
+    turno: novoTurno,
+    volumeTurno: novoTurno === state.world.turno ? world.volumeTurno : 0,
+    cvUltimaSyncMin: Math.min(9, world.cvUltimaSyncMin + (world.cvOnline ? delta : 1)),
+  };
+
+  const [queue, r2] = refillQueue(world, remaining, rng);
+  rng = r2;
+  return { ...state, world, queue, rng };
+}
+
 function init(): TwinState {
-  const world = createInitialState();
+  const base = createInitialState();
+  const world: WorldState = { ...base, now: base.now - WARMUP_MIN };
   const [queue, rng] = refillQueue(world, [], 42);
-  return { world, queue, rng, selectedBayId: null, reportOpen: false };
+  let state: TwinState = { world, queue, rng, selectedBayId: null, reportOpen: false };
+  for (let i = 0; i < WARMUP_MIN; i += 1) {
+    state = step(state, 1);
+  }
+  return state;
 }
 
 function reducer(state: TwinState, action: Action): TwinState {
   switch (action.type) {
     case 'TICK': {
       if (state.world.paused) return state;
-      const newNow = state.world.now + state.world.speed;
-      const due = state.queue.filter((e) => e.simTime <= newNow);
-      const remaining = state.queue.filter((e) => e.simTime > newNow);
-
-      let world = applyEvents(state.world, due);
-      world = { ...world, now: newNow };
-      world = updateTempos(world);
-      const [limited] = enforceLimits(world);
-      world = limited;
-
-      let rng = state.rng;
-      const [precos, r1] = driftPrecos(world, rng);
-      rng = r1;
-      const novoTurno = deriveTurno(newNow);
-      world = {
-        ...world,
-        precos,
-        turno: novoTurno,
-        volumeTurno: novoTurno === state.world.turno ? world.volumeTurno : 0,
-        cvUltimaSyncMin: Math.min(9, world.cvUltimaSyncMin + (world.cvOnline ? world.speed : 1)),
-      };
-
-      const [queue, r2] = refillQueue(world, remaining, rng);
-      rng = r2;
-      return { ...state, world, queue, rng };
+      return step(state, state.world.speed);
     }
     case 'SET_SPEED':
       return { ...state, world: { ...state.world, speed: action.speed } };

@@ -44,7 +44,7 @@ export default function ReportModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center p-6 print:static print:block print:p-0"
+      className="fixed inset-0 z-50 grid place-items-center p-3 print:static print:block print:p-0 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label="Relatório de cotações e ocupação"
@@ -59,7 +59,7 @@ export default function ReportModal() {
         className="relative z-10 max-h-[85vh] w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-2xl outline-none print:static print:max-h-none print:max-w-none print:overflow-visible print:rounded-none print:shadow-none"
       >
         <div className="print-area">
-          <div className="flex items-center justify-between border-b border-line px-6 py-4">
+          <div className="flex items-center justify-between border-b border-line px-4 py-4 sm:px-6">
             <div>
               <h3 className="text-base font-extrabold">Relatório de Cotações e Ocupação</h3>
               <p className="text-xs text-ink-soft">
@@ -74,8 +74,8 @@ export default function ReportModal() {
               <X size={18} />
             </button>
           </div>
-          <div className="max-h-[55vh] overflow-y-auto px-6 py-4 print:max-h-none print:overflow-visible">
-            <table className="w-full text-left text-xs">
+          <div className="max-h-[55vh] overflow-auto px-4 py-4 print:max-h-none print:overflow-visible sm:px-6">
+            <table className="w-full min-w-[620px] text-left text-xs">
               <thead>
                 <tr className="border-b border-line text-[10px] uppercase tracking-wide text-ink-soft">
                   <th className="py-2">Box</th>
@@ -113,7 +113,7 @@ export default function ReportModal() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-center justify-between border-t border-line px-6 py-4 print:hidden">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-4 print:hidden sm:px-6">
             <span className="text-[11px] text-ink-soft">
               {rows.length} boxes ocupados · dados simulados
             </span>

@@ -44,7 +44,7 @@ export function createInitialState(): WorldState {
   return {
     now: 4 * 60 + 30,
     turno: 'Madrugada',
-    speed: 1,
+    speed: 4,
     paused: false,
     bays,
     trucks: {},

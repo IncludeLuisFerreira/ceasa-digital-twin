@@ -9,10 +9,10 @@ export default function TimeControls() {
   const dispatch = useTwinDispatch();
   const progresso = ((world.now % TURNO_DURACAO_MIN) / TURNO_DURACAO_MIN) * 100;
   return (
-    <section className="flex items-center gap-3 rounded-lg border border-line/70 bg-white px-4 py-3 shadow-sm">
+    <section className="flex flex-wrap items-center gap-3 rounded-lg border border-line/70 bg-white px-3 py-3 shadow-sm sm:px-4">
       <button
         onClick={() => dispatch({ type: 'TOGGLE_PAUSE' })}
-        className="grid h-8 w-8 place-items-center rounded-md bg-[#0F172A] text-white"
+        className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[#0F172A] text-white"
         aria-label={world.paused ? 'Retomar simulação' : 'Pausar simulação'}
       >
         {world.paused ? <Play size={14} /> : <Pause size={14} />}
@@ -32,10 +32,10 @@ export default function TimeControls() {
           </button>
         ))}
       </div>
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200">
+      <div className="h-1.5 min-w-[120px] flex-1 overflow-hidden rounded-full bg-slate-200">
         <div className="h-full rounded-full bg-[#2563EB]" style={{ width: `${progresso}%` }} />
       </div>
-      <span className="text-[11px] font-bold tabular-nums text-ink">
+      <span className="whitespace-nowrap text-[11px] font-bold tabular-nums text-ink">
         {formatClock(world.now)} · Turno {world.turno}
       </span>
     </section>

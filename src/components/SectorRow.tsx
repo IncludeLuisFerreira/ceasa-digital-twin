@@ -14,7 +14,7 @@ export default function SectorRow({ setor }: { setor: 'A' | 'B' }) {
           {ocupados}/{ids.length} ocupados
         </span>
       </div>
-      <div className="grid grid-cols-12 gap-1.5">
+      <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-6 lg:grid-cols-12">
         {ids.map((id) => (
           <BayBox key={id} bay={world.bays[id]} />
         ))}

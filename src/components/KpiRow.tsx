@@ -24,7 +24,7 @@ export default function KpiRow() {
     },
   ];
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
       {cards.map((c) => (
         <div key={c.label} className="rounded-lg border border-line/70 bg-white p-4 shadow-sm">
           <div className="flex items-center justify-between">
@@ -33,7 +33,7 @@ export default function KpiRow() {
             </span>
             <c.icon size={16} className={c.tone} />
           </div>
-          <div className="mt-2 text-3xl font-extrabold tabular-nums">{c.value}</div>
+          <div className="mt-2 text-2xl font-extrabold tabular-nums sm:text-3xl">{c.value}</div>
         </div>
       ))}
     </div>

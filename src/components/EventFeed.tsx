@@ -5,7 +5,7 @@ import { useTwin } from '../state/TwinContext';
 export default function EventFeed() {
   const { world } = useTwin();
   return (
-    <aside className="flex max-h-[720px] flex-col rounded-lg border border-line/70 bg-white p-4 shadow-sm">
+    <aside className="flex max-h-[420px] flex-col rounded-lg border border-line/70 bg-white p-4 shadow-sm xl:max-h-[720px]">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-sm font-extrabold">Eventos ao vivo</h2>
         <span
