@@ -134,7 +134,7 @@ type Event = {
     precoKg?: number;
     motivo?: string;      // motivo de anomalia
     volumeTon?: number;
-    placa?: string;       // placa exibida do caminhão
+    produtor?: string;    // nome do produtor rural
   };
 };
 ```
@@ -161,8 +161,8 @@ type Bay = {
 
 ```ts
 type Truck = {
-  id: string;             // id único da jornada, ex: "PXR-2A41-1234"
-  placa: string;          // placa exibida, ex: "PXR-2A41"
+  id: string;             // id único da jornada, ex: "João Batista-1234"
+  produtor: string;       // nome do produtor, ex: "João Batista"
   produto: string;
   procedencia: string;    // origem do produto, ex: "Petrolina/PE"
   estado: 'chegou' | 'pesando' | 'descarregando' | 'saindo';

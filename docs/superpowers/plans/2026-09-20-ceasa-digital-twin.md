@@ -26,6 +26,10 @@
 > tracejada). Foram removidos a barra de portarias/área de manobra, o rótulo "rua
 > central de circulação" e os chips de caminhão (`TruckChip.tsx` removido). O
 > scheduler escala a taxa de chegadas com o número de boxes.
+>
+> **Produtores (pós-implementação):** as placas de veículo foram substituídas por
+> **nomes de produtores**. O campo `Truck.placa`/`Event.meta.placa` virou
+> `produtor`, e `PLACAS` virou `PRODUTORES` em `catalog.ts`.
 
 ---
 
