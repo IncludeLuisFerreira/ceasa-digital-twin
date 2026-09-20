@@ -168,6 +168,7 @@ type WorldState = {
   trucks: Record<string, Truck>;
   events: Event[];             // feed completo, mais recente primeiro
   precos: Record<string, number>; // preço atual por produto (drift por tick)
+  volumeTurno: number;         // ton acumuladas no turno atual (reseta na virada)
   cvOnline: boolean;           // false → badge "sinal perdido"
   cvPrecisao: number;          // ex: 0.98
   cvUltimaSyncMin: number;     // minutos desde a última sync
