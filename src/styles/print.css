@@ -1,0 +1,21 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+  .print-area::before {
+    content: "CEASA · Sistema de Inteligência Logística";
+    display: block;
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+}
