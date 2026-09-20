@@ -8,8 +8,17 @@ export default function EventFeed() {
     <aside className="flex max-h-[720px] flex-col rounded-lg border border-line/70 bg-white p-4 shadow-sm">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-sm font-extrabold">Eventos ao vivo</h2>
-        <span className="flex items-center gap-1.5 text-[10px] font-bold text-red-600">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> LIVE
+        <span
+          className={`flex items-center gap-1.5 text-[10px] font-bold ${
+            world.paused ? 'text-slate-500' : 'text-red-600'
+          }`}
+        >
+          <span
+            className={`h-2 w-2 rounded-full ${
+              world.paused ? 'bg-slate-400' : 'animate-pulse bg-red-500'
+            }`}
+          />
+          {world.paused ? 'PAUSADO' : 'LIVE'}
         </span>
       </div>
       <div className="overflow-y-auto pr-1">

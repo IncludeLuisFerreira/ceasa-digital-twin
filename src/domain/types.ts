@@ -62,6 +62,7 @@ export type WorldState = {
   trucks: Record<string, Truck>;
   events: Event[];
   precos: Record<string, number>;
+  volumeTurno: number;
   cvOnline: boolean;
   cvPrecisao: number;
   cvUltimaSyncMin: number;

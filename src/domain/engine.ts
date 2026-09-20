@@ -50,6 +50,7 @@ export function createInitialState(): WorldState {
     trucks: {},
     events: [],
     precos,
+    volumeTurno: 0,
     cvOnline: true,
     cvPrecisao: 0.98,
     cvUltimaSyncMin: 2,
@@ -96,6 +97,7 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
         target = Object.keys(bays).find((id) => bays[id].status === 'livre');
       }
       if (!target) {
+        applied = { ...event, boxId: undefined };
         if (t) trucks[t.id] = { ...t, estado: 'descarregando' };
         break;
       }
@@ -113,16 +115,17 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
     }
     case 'UNLOADING_FINISHED': {
       const t = event.truckId ? trucks[event.truckId] : undefined;
+      const target = t?.boxId;
       if (t) trucks[t.id] = { ...t, estado: 'saindo' };
-      const target =
-        (event.truckId ? trucks[event.truckId]?.boxId : undefined) ?? event.boxId;
       if (target && bays[target]) {
         applied = { ...event, boxId: target };
         const b = bays[target];
         const dur = event.simTime - (b.ocupacaoInicio ?? event.simTime);
         bays[target] = { ...b, rotatividade: pushSample(b.rotatividade, dur) };
+      } else {
+        applied = { ...event, boxId: undefined };
       }
-      break;
+      return finish(state, trucks, bays, applied, state.volumeTurno + (event.meta?.volumeTon ?? 0));
     }
     case 'DEPARTED': {
       const t = event.truckId ? trucks[event.truckId] : undefined;
@@ -131,7 +134,7 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
     }
     case 'CLEANING_DONE': {
       const truckBox = event.truckId ? trucks[event.truckId]?.boxId : undefined;
-      const target = truckBox ?? event.boxId;
+      const target = truckBox;
       if (target && bays[target]) {
         applied = { ...event, boxId: target };
         bays[target] = {
@@ -143,6 +146,8 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
           tempoOcupacaoMin: undefined,
           alertaMotivo: undefined,
         };
+      } else {
+        applied = { ...event, boxId: undefined };
       }
       if (event.truckId && trucks[event.truckId]) {
         const rest = { ...trucks };
@@ -173,6 +178,7 @@ function finish(
   trucks: WorldState['trucks'],
   bays: WorldState['bays'],
   event: Event,
+  volumeTurno: number = state.volumeTurno,
 ): WorldState {
   const cvOnline =
     event.type === 'CV_SIGNAL_LOST' ? Boolean(event.meta?.online) : state.cvOnline;
@@ -183,6 +189,7 @@ function finish(
     events: [event, ...state.events].slice(0, 600),
     cvOnline,
     cvUltimaSyncMin: event.type === 'CV_SIGNAL_LOST' && cvOnline ? 0 : state.cvUltimaSyncMin,
+    volumeTurno,
   };
 }
 
@@ -231,13 +238,10 @@ export function deriveKpis(state: WorldState): Kpis {
   const total = bays.length;
   const ocupados = bays.filter((b) => b.status === 'ocupado' || b.status === 'alerta').length;
   const alertas = bays.filter((b) => b.status === 'alerta').length;
-  const volumeTon = state.events
-    .filter((e) => e.type === 'WEIGHED' && e.meta?.volumeTon)
-    .reduce((sum, e) => sum + (e.meta?.volumeTon ?? 0), 0);
   return {
     ocupacaoPct: total > 0 ? Math.round((ocupados / total) * 100) : 0,
     alertas,
-    volumeTon: Math.round(volumeTon),
+    volumeTon: Math.round(state.volumeTurno),
   };
 }
 

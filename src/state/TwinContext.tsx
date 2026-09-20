@@ -57,10 +57,12 @@ function reducer(state: TwinState, action: Action): TwinState {
       let rng = state.rng;
       const [precos, r1] = driftPrecos(world, rng);
       rng = r1;
+      const novoTurno = deriveTurno(newNow);
       world = {
         ...world,
         precos,
-        turno: deriveTurno(newNow),
+        turno: novoTurno,
+        volumeTurno: novoTurno === state.world.turno ? world.volumeTurno : 0,
         cvUltimaSyncMin: Math.min(9, world.cvUltimaSyncMin + (world.cvOnline ? world.speed : 1)),
       };
 

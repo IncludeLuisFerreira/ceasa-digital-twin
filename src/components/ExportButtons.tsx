@@ -25,7 +25,7 @@ export default function ExportButtons({ rows }: { rows: ReportRow[] }) {
     a.href = url;
     a.download = `ceasa-relatorio-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   return (

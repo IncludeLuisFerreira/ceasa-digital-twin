@@ -18,9 +18,8 @@ export function createJourney(
   const livres = BAY_IDS.filter(
     (id) => state.bays[id].status === 'livre' && !reserved.has(id),
   );
-  const fallback = BAY_IDS.filter((id) => !reserved.has(id));
-  const candidatos = livres.length > 0 ? livres : fallback.length > 0 ? fallback : BAY_IDS;
-  const [bayId, r3] = pick(r, candidatos);
+  if (livres.length === 0) return [[], r];
+  const [bayId, r3] = pick(r, livres);
   r = r3;
 
   const [volume, r4] = randomInt(r, 5, 25);
@@ -60,7 +59,7 @@ export function createJourney(
     mk('TRUCK_ARRIVED', tArrive, { meta: { produto: produto.nome, placa } }),
     mk('WEIGHED', tWeigh, { meta: { produto: produto.nome, volumeTon: volume } }),
     mk('UNLOADING_STARTED', tStart, { meta: { produto: produto.nome } }),
-    mk('UNLOADING_FINISHED', tFinish),
+    mk('UNLOADING_FINISHED', tFinish, { meta: { volumeTon: volume } }),
     mk('DEPARTED', tDepart),
     mk('CLEANING_DONE', tClean),
   ];
@@ -89,6 +88,7 @@ export function refillQueue(
     const startTime = cursor + gap;
     const [journey, r2] = createJourney(state, r, startTime, reserved);
     r = r2;
+    if (journey.length === 0) break;
     journey.forEach((e) => {
       if (e.boxId) reserved.add(e.boxId);
     });
