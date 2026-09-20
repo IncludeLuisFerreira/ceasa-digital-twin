@@ -4,6 +4,7 @@ import KpiRow from './components/KpiRow';
 import FloorPlan from './components/FloorPlan';
 import EventFeed from './components/EventFeed';
 import TimeControls from './components/TimeControls';
+import BayDrawer from './components/BayDrawer';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
             <EventFeed />
           </div>
         </main>
+        <BayDrawer />
       </div>
     </TwinProvider>
   );
