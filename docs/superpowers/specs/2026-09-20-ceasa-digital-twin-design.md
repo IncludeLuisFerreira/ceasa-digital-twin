@@ -46,7 +46,9 @@ GovTech real.
 - Simulação de física contínua de caminhões (trajetórias, colisão, filas com
   dinâmica de fluidos). O movimento é representado por eventos discretos.
 - Testes automatizados (fora do escopo desta entrega).
-- Responsividade mobile completa (foco em desktop/notebook de apresentação).
+- Responsividade mobile avançada. O layout é desktop-first, mas com adaptação para
+  smartphones: header empilhado, boxes em grade de 4 colunas, controles com quebra
+  de linha e tabela do relatório com rolagem horizontal.
 
 ## 2. Stack
 
@@ -214,6 +216,10 @@ type WorldState = {
   "sinal perdido" e volta a online.
 - **Rotatividade**: cada box mantém 6 amostras horárias usadas no sparkline.
 - **Velocidade**: 1x = 1 minuto simulado por segundo real; 4x e 16x multiplicam.
+  O padrão é 4x, para a demo ficar viva logo ao abrir.
+- **Warm-up**: ao carregar, a simulação roda ~180 min em passos de 1 min antes do
+  primeiro render, para o painel já abrir com boxes ocupados, feed com histórico e
+  KPIs preenchidos.
 - O `scheduler` mantém a fila de eventos futuros sempre abastecida para a
   operação nunca parecer parada.
 

@@ -14,6 +14,12 @@
 > cotações), conforme o spec. Ver `descriptions.ts`, `KpiRow.tsx`, `BayBox.tsx`,
 > `TruckChip.tsx`, `FloorPlan.tsx`, `BayDrawer.tsx`, `ReportModal.tsx`,
 > `ExportButtons.tsx` e `catalog.ts`.
+>
+> **Ajustes de demo (pós-implementação):** `TwinContext.init()` roda um warm-up de
+> 180 min antes do primeiro render (painel abre populado) e a velocidade padrão é
+> 4x. O layout ganhou adaptação para smartphones (header/controles com quebra de
+> linha, boxes em `grid-cols-4 sm:grid-cols-6 lg:grid-cols-12`, tabela do relatório
+> com rolagem horizontal).
 
 ---
 
