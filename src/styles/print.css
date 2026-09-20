@@ -7,8 +7,7 @@
     visibility: visible;
   }
   .print-area {
-    position: absolute;
-    inset: 0;
+    position: static;
     width: 100%;
   }
   .print-area::before {

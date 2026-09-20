@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { formatClock, formatTempo } from '../domain/engine';
 import { EVENT_DOT, describeEvent } from '../domain/descriptions';
@@ -7,17 +7,25 @@ import { useTwin, useTwinDispatch } from '../state/TwinContext';
 const LABEL = { livre: 'Livre', ocupado: 'Ocupado', alerta: 'Alerta CV' } as const;
 
 export default function BayDrawer() {
-  const { world, selectedBayId } = useTwin();
+  const { world, selectedBayId, reportOpen } = useTwin();
   const dispatch = useTwinDispatch();
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!selectedBayId) return;
+    if (!selectedBayId || reportOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') dispatch({ type: 'SELECT_BAY', bayId: null });
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [selectedBayId, dispatch]);
+  }, [selectedBayId, reportOpen, dispatch]);
+
+  useEffect(() => {
+    if (!selectedBayId) return;
+    const prev = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+    return () => prev?.focus();
+  }, [selectedBayId]);
 
   if (!selectedBayId) return null;
   const bay = world.bays[selectedBayId];
@@ -29,7 +37,11 @@ export default function BayDrawer() {
         className="absolute inset-0 bg-slate-900/30"
         onClick={() => dispatch({ type: 'SELECT_BAY', bayId: null })}
       />
-      <div className="relative z-10 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className="relative z-10 flex h-full w-full max-w-md flex-col bg-white shadow-2xl outline-none"
+      >
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <div>
             <h3 className="text-base font-extrabold">Box {bay.id}</h3>

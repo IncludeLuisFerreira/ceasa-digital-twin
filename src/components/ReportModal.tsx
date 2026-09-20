@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { PRODUTOS } from '../domain/catalog';
 import { formatClock, formatTempo } from '../domain/engine';
@@ -17,6 +17,7 @@ function buildRow(b: Bay, world: WorldState): ReportRow {
 export default function ReportModal() {
   const { world, reportOpen } = useTwin();
   const dispatch = useTwinDispatch();
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!reportOpen) return;
@@ -27,6 +28,13 @@ export default function ReportModal() {
     return () => window.removeEventListener('keydown', onKey);
   }, [reportOpen, dispatch]);
 
+  useEffect(() => {
+    if (!reportOpen) return;
+    const prev = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+    return () => prev?.focus();
+  }, [reportOpen]);
+
   if (!reportOpen) return null;
   const rows = Object.values(world.bays)
     .filter((b) => b.status !== 'livre')
@@ -34,7 +42,7 @@ export default function ReportModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center p-6"
+      className="fixed inset-0 z-50 grid place-items-center p-6 print:static print:block print:p-0"
       role="dialog"
       aria-modal="true"
       aria-label="Relatório de cotações e ocupação"
@@ -43,7 +51,11 @@ export default function ReportModal() {
         className="absolute inset-0 bg-slate-900/40"
         onClick={() => dispatch({ type: 'TOGGLE_REPORT', open: false })}
       />
-      <div className="relative z-10 max-h-[85vh] w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-2xl print:max-h-none print:overflow-visible">
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className="relative z-10 max-h-[85vh] w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-2xl outline-none print:static print:max-h-none print:max-w-none print:overflow-visible print:rounded-none print:shadow-none"
+      >
         <div className="print-area">
           <div className="flex items-center justify-between border-b border-line px-6 py-4">
             <div>
