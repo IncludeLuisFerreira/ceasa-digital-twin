@@ -1,4 +1,4 @@
-export type Sector = 'A' | 'B';
+export type Sector = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 
 export type BayStatus = 'livre' | 'ocupado' | 'alerta';
 

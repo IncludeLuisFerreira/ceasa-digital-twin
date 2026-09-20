@@ -32,7 +32,7 @@ export function createInitialState(): WorldState {
   BAY_IDS.forEach((id) => {
     bays[id] = {
       id,
-      setor: id.startsWith('A') ? 'A' : 'B',
+      setor: id[0] as Bay['setor'],
       status: 'livre',
       rotatividade: [0, 0, 0, 0, 0, 0],
     };

@@ -34,7 +34,7 @@ type Action =
   | { type: 'SELECT_BAY'; bayId: string | null }
   | { type: 'TOGGLE_REPORT'; open?: boolean };
 
-const WARMUP_MIN = 180;
+const WARMUP_MIN = 360;
 
 function step(state: TwinState, delta: number): TwinState {
   const newNow = state.world.now + delta;

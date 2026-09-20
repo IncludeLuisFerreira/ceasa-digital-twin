@@ -1,8 +1,9 @@
 import { BAY_IDS } from '../domain/catalog';
+import type { Sector } from '../domain/types';
 import { useTwin } from '../state/TwinContext';
 import BayBox from './BayBox';
 
-export default function SectorRow({ setor }: { setor: 'A' | 'B' }) {
+export default function SectorRow({ setor }: { setor: Sector }) {
   const { world } = useTwin();
   const ids = BAY_IDS.filter((id) => id.startsWith(setor));
   const ocupados = ids.filter((id) => world.bays[id].status !== 'livre').length;

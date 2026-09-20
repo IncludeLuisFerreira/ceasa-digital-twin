@@ -83,9 +83,10 @@ export function refillQueue(
   const arrivals = q.filter((e) => e.type === 'TRUCK_ARRIVED').map((e) => e.simTime);
   let cursor = arrivals.length > 0 ? Math.max(...arrivals) : state.now;
   let lastTime = q.length > 0 ? Math.max(...q.map((e) => e.simTime)) : state.now;
+  const targetArrivals = Math.max(5, Math.round(BAY_IDS.length / 4));
 
-  while (q.filter((e) => e.type === 'TRUCK_ARRIVED').length < 5) {
-    const [gap, r1] = randomInt(r, 3, 12);
+  while (q.filter((e) => e.type === 'TRUCK_ARRIVED').length < targetArrivals) {
+    const [gap, r1] = randomInt(r, 1, 5);
     r = r1;
     const startTime = cursor + gap;
     const [journey, r2] = createJourney(state, r, startTime, reserved);

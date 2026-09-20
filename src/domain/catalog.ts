@@ -17,7 +17,9 @@ export const PRODUTOS: Produto[] = [
 
 export const SECTOR_BAY_COUNT = 12;
 
-export const BAY_IDS: string[] = (['A', 'B'] as const).flatMap((setor) =>
+export const SETORES = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
+
+export const BAY_IDS: string[] = SETORES.flatMap((setor) =>
   Array.from({ length: SECTOR_BAY_COUNT }, (_, i) => `${setor}${String(i + 1).padStart(2, '0')}`),
 );
 
