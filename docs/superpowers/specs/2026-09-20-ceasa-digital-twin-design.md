@@ -120,6 +120,7 @@ type Event = {
     precoKg?: number;
     motivo?: string;      // motivo de anomalia
     volumeTon?: number;
+    placa?: string;       // placa exibida do caminhão
   };
 };
 ```
@@ -146,7 +147,8 @@ type Bay = {
 
 ```ts
 type Truck = {
-  id: string;             // placa, ex: "PXR-2A41"
+  id: string;             // id único da jornada, ex: "PXR-2A41-1234"
+  placa: string;          // placa exibida, ex: "PXR-2A41"
   produto: string;
   estado: 'chegou' | 'pesando' | 'descarregando' | 'saindo';
   boxId?: string;

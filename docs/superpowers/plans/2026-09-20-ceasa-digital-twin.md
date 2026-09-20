@@ -148,8 +148,7 @@ Create `src/styles/print.css`:
     visibility: visible;
   }
   .print-area {
-    position: absolute;
-    inset: 0;
+    position: static;
     width: 100%;
   }
   .print-area::before {
@@ -223,6 +222,7 @@ export type Event = {
     motivo?: string;
     volumeTon?: number;
     online?: boolean;
+    placa?: string;
   };
 };
 
@@ -242,6 +242,7 @@ export type TruckState = 'chegou' | 'pesando' | 'descarregando' | 'saindo';
 
 export type Truck = {
   id: string;
+  placa: string;
   produto: string;
   estado: TruckState;
   boxId?: string;
@@ -386,7 +387,7 @@ import { BAY_IDS, PRODUTOS } from './catalog';
 import { nextRandom } from './rng';
 import type { Bay, Event, Kpis, Turno, WorldState } from './types';
 
-export const TURNO_LIMITE_MIN = 360;
+export const TURNO_LIMITE_MIN = 180;
 export const TURNO_DURACAO_MIN = 360;
 
 export function deriveTurno(now: number): Turno {
@@ -454,6 +455,7 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
       if (event.truckId) {
         trucks[event.truckId] = {
           id: event.truckId,
+          placa: event.meta?.placa ?? event.truckId,
           produto: event.meta?.produto ?? 'Tomate',
           estado: 'chegou',
           volumeTon: 0,
@@ -497,25 +499,28 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
     case 'UNLOADING_FINISHED': {
       const t = event.truckId ? trucks[event.truckId] : undefined;
       if (t) trucks[t.id] = { ...t, estado: 'saindo' };
-      if (event.boxId && bays[event.boxId]) {
-        const b = bays[event.boxId];
+      const target =
+        (event.truckId ? trucks[event.truckId]?.boxId : undefined) ?? event.boxId;
+      if (target && bays[target]) {
+        applied = { ...event, boxId: target };
+        const b = bays[target];
         const dur = event.simTime - (b.ocupacaoInicio ?? event.simTime);
-        bays[event.boxId] = { ...b, rotatividade: pushSample(b.rotatividade, dur) };
+        bays[target] = { ...b, rotatividade: pushSample(b.rotatividade, dur) };
       }
       break;
     }
     case 'DEPARTED': {
-      if (event.truckId && trucks[event.truckId]) {
-        const rest = { ...trucks };
-        delete rest[event.truckId];
-        return finish(state, rest, bays, event);
-      }
+      const t = event.truckId ? trucks[event.truckId] : undefined;
+      if (t) trucks[t.id] = { ...t, estado: 'saindo' };
       break;
     }
     case 'CLEANING_DONE': {
-      if (event.boxId && bays[event.boxId]) {
-        bays[event.boxId] = {
-          ...bays[event.boxId],
+      const truckBox = event.truckId ? trucks[event.truckId]?.boxId : undefined;
+      const target = truckBox ?? event.boxId;
+      if (target && bays[target]) {
+        applied = { ...event, boxId: target };
+        bays[target] = {
+          ...bays[target],
           status: 'livre',
           produto: undefined,
           truckId: undefined,
@@ -523,6 +528,11 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
           tempoOcupacaoMin: undefined,
           alertaMotivo: undefined,
         };
+      }
+      if (event.truckId && trucks[event.truckId]) {
+        const rest = { ...trucks };
+        delete rest[event.truckId];
+        return finish(state, rest, bays, applied);
       }
       break;
     }
@@ -555,7 +565,7 @@ function finish(
     ...state,
     trucks,
     bays,
-    events: [event, ...state.events],
+    events: [event, ...state.events].slice(0, 600),
     cvOnline,
     cvUltimaSyncMin: event.type === 'CV_SIGNAL_LOST' && cvOnline ? 0 : state.cvUltimaSyncMin,
   };
@@ -690,7 +700,9 @@ export function createJourney(
   r = r5;
   const [g2, r6] = randomInt(r, 8, 15);
   r = r6;
-  const [dur, r7] = randomInt(r, 30, 90);
+  const [longo, rDur] = nextRandom(r);
+  r = rDur;
+  const [dur, r7] = longo < 0.22 ? randomInt(r, 200, 360) : randomInt(r, 30, 90);
   r = r7;
   const [g3, r8] = randomInt(r, 5, 10);
   r = r8;
@@ -704,17 +716,19 @@ export function createJourney(
   const tDepart = tFinish + g3;
   const tClean = tDepart + g4;
 
+  const truckId = `${placa}-${startTime}`;
+
   const mk = (type: Event['type'], simTime: number, extra: Partial<Event> = {}): Event => ({
-    id: `${type}-${placa}-${simTime}`,
+    id: `${type}-${truckId}-${simTime}`,
     simTime,
     type,
-    truckId: placa,
+    truckId,
     boxId: bayId,
     ...extra,
   });
 
   const events: Event[] = [
-    mk('TRUCK_ARRIVED', tArrive, { meta: { produto: produto.nome } }),
+    mk('TRUCK_ARRIVED', tArrive, { meta: { produto: produto.nome, placa } }),
     mk('WEIGHED', tWeigh, { meta: { produto: produto.nome, volumeTon: volume } }),
     mk('UNLOADING_STARTED', tStart, { meta: { produto: produto.nome } }),
     mk('UNLOADING_FINISHED', tFinish),
@@ -736,19 +750,22 @@ export function refillQueue(
   const reserved = new Set(
     q.filter((e) => e.type === 'UNLOADING_STARTED' && e.boxId).map((e) => e.boxId as string),
   );
+  const arrivals = q.filter((e) => e.type === 'TRUCK_ARRIVED').map((e) => e.simTime);
+  let cursor = arrivals.length > 0 ? Math.max(...arrivals) : state.now;
   let lastTime = q.length > 0 ? Math.max(...q.map((e) => e.simTime)) : state.now;
 
-  while (q.filter((e) => e.type === 'TRUCK_ARRIVED').length < 4) {
-    const [gap, r1] = randomInt(r, 4, 18);
+  while (q.filter((e) => e.type === 'TRUCK_ARRIVED').length < 5) {
+    const [gap, r1] = randomInt(r, 3, 12);
     r = r1;
-    const startTime = lastTime + gap;
+    const startTime = cursor + gap;
     const [journey, r2] = createJourney(state, r, startTime, reserved);
     r = r2;
     journey.forEach((e) => {
       if (e.boxId) reserved.add(e.boxId);
     });
     q = [...q, ...journey];
-    lastTime = Math.max(...journey.map((e) => e.simTime));
+    cursor = startTime;
+    lastTime = Math.max(lastTime, ...journey.map((e) => e.simTime));
 
     const [chance, r3] = nextRandom(r);
     r = r3;
@@ -833,17 +850,18 @@ export const EVENT_DOT: Record<EventType, string> = {
 };
 
 export function describeEvent(e: Event): string {
+  const placa = e.meta?.placa ?? e.truckId?.replace(/-\d+$/, '') ?? '';
   switch (e.type) {
     case 'TRUCK_ARRIVED':
-      return `Entrada ${e.truckId}${e.meta?.produto ? ` · ${e.meta.produto}` : ''}`;
+      return `Entrada ${placa}${e.meta?.produto ? ` · ${e.meta.produto}` : ''}`;
     case 'WEIGHED':
-      return `Pesagem ${e.truckId} · ${e.meta?.volumeTon ?? 0} t`;
+      return `Pesagem ${placa} · ${e.meta?.volumeTon ?? 0} t`;
     case 'UNLOADING_STARTED':
       return `Descarga iniciada · Box ${e.boxId}`;
     case 'UNLOADING_FINISHED':
       return `Descarga concluída · Box ${e.boxId}`;
     case 'DEPARTED':
-      return `Saída ${e.truckId}`;
+      return `Saída ${placa}`;
     case 'CLEANING_DONE':
       return `Box ${e.boxId} liberado · limpeza OK`;
     case 'CV_ANOMALY':
@@ -1200,7 +1218,7 @@ export default function TruckChip({ truck }: { truck: Truck }) {
     <span
       className={`inline-flex items-center gap-1 rounded px-2 py-1 text-[10px] font-bold text-white ${TONE[truck.estado]}`}
     >
-      🚚 {truck.id} · {LABEL[truck.estado]}
+      🚚 {truck.placa} · {LABEL[truck.estado]}
       {truck.boxId ? ` → ${truck.boxId}` : ''}
     </span>
   );
@@ -1307,7 +1325,7 @@ import TruckChip from './TruckChip';
 
 export default function FloorPlan() {
   const { world } = useTwin();
-  const trucks = Object.values(world.trucks);
+  const trucks = Object.values(world.trucks).filter((t) => t.estado !== 'saindo');
   return (
     <section className="rounded-lg border border-line/70 bg-white p-4 shadow-sm">
       <div className="mb-3 grid grid-cols-3 gap-2 text-[11px] font-bold">
@@ -1584,7 +1602,10 @@ export default function BayDrawer() {
           </button>
         </div>
         <div className="grid grid-cols-2 gap-3 border-b border-line px-5 py-4 text-xs">
-          <Info label="Veículo" value={bay.truckId ?? '—'} />
+          <Info
+            label="Veículo"
+            value={bay.truckId ? (world.trucks[bay.truckId]?.placa ?? bay.truckId) : '—'}
+          />
           <Info
             label="Tempo de ocupação"
             value={bay.status === 'livre' ? '—' : formatTempo(bay.tempoOcupacaoMin ?? 0)}
