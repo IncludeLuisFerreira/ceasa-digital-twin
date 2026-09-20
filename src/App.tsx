@@ -5,6 +5,7 @@ import FloorPlan from './components/FloorPlan';
 import EventFeed from './components/EventFeed';
 import TimeControls from './components/TimeControls';
 import BayDrawer from './components/BayDrawer';
+import ReportModal from './components/ReportModal';
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           </div>
         </main>
         <BayDrawer />
+        <ReportModal />
       </div>
     </TwinProvider>
   );
