@@ -180,7 +180,7 @@ function finish(
     ...state,
     trucks,
     bays,
-    events: [event, ...state.events],
+    events: [event, ...state.events].slice(0, 600),
     cvOnline,
     cvUltimaSyncMin: event.type === 'CV_SIGNAL_LOST' && cvOnline ? 0 : state.cvUltimaSyncMin,
   };
