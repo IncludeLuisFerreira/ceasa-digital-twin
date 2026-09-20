@@ -145,7 +145,7 @@ type Event = {
 type BayStatus = 'livre' | 'ocupado' | 'alerta';
 
 type Bay = {
-  id: string;             // "A01".."A12", "B01".."B12"
+  id: string;             // "A01".."F12" (6 setores × 12 boxes)
   setor: 'A' | 'B';
   status: BayStatus;
   produto?: string;
@@ -237,17 +237,19 @@ type WorldState = {
 Três cards: **Taxa de Ocupação dos Boxes**, **Boxes com Ocorrência CV**,
 **Volume Ofertado no Turno (ton)**. Valores animam suavemente na mudança.
 
-### 6.3 Planta espacial (núcleo) — variante "Espinha central"
+### 6.3 Planta espacial (núcleo)
 
-- **Setor A** em uma faixa superior com 12 boxes; **Setor B** em uma faixa inferior
-  com 12 boxes.
-- Entre os setores, a **rua central de circulação** com chips de caminhões
-  (placa + destino/estado).
-- Barra superior da planta: **Portaria 1 · Balança** (esquerda), **Área de giro**
-  (centro), **Portaria 2** (direita).
-- Cada box: número, cor de status, e tempo de ocupação quando ocupado.
-- **Hover no box** → tooltip com status, tempo de ocupação e motivo do alerta.
+O galpão é dividido por uma **passagem central** (uma reta que separa os dois lados):
+
+- **3 linhas de boxes acima** da passagem (Setores A, B e C) e **3 abaixo**
+  (Setores D, E e F), com 12 boxes cada — **72 boxes** no total.
+- Cada box: número, cor de status e tempo de comercialização quando ocupado.
+- **Hover no box** → tooltip com status, produto, produtor, procedência, tempo e
+  motivo da ocorrência.
 - **Clique no box** → abre o `BayDrawer`.
+
+Sem barra de portarias e sem chips de caminhão na planta; a atividade dos veículos
+fica no feed de eventos, no tooltip e no drawer do box.
 
 ### 6.4 Cores e tokens
 
@@ -305,7 +307,7 @@ Abre ao clicar em um box, mantendo o mapa visível ao fundo:
 
 ## 8. Critérios de Aceite
 
-1. `npm run dev` sobe o app sem erros e a planta renderiza 24 boxes nos Setores A e B.
+1. `npm run dev` sobe o app sem erros e a planta renderiza 72 boxes nos Setores A–F.
 2. Com o tempo rodando, eventos aparecem no feed e mudam o estado dos boxes sem
    intervenção manual.
 3. Alternar 1x/4x/16x altera visivelmente o ritmo dos eventos; pausar congela o

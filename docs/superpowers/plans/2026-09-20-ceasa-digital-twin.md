@@ -16,10 +16,16 @@
 > `ExportButtons.tsx` e `catalog.ts`.
 >
 > **Ajustes de demo (pós-implementação):** `TwinContext.init()` roda um warm-up de
-> 180 min antes do primeiro render (painel abre populado) e a velocidade padrão é
+> 360 min antes do primeiro render (painel abre populado) e a velocidade padrão é
 > 4x. O layout ganhou adaptação para smartphones (header/controles com quebra de
 > linha, boxes em `grid-cols-4 sm:grid-cols-6 lg:grid-cols-12`, tabela do relatório
 > com rolagem horizontal).
+>
+> **Planta ampliada (pós-implementação):** a planta passou de 2 para **6 setores
+> (A–F, 72 boxes)**, 3 linhas acima e 3 abaixo de uma passagem central (reta
+> tracejada). Foram removidos a barra de portarias/área de manobra, o rótulo "rua
+> central de circulação" e os chips de caminhão (`TruckChip.tsx` removido). O
+> scheduler escala a taxa de chegadas com o número de boxes.
 
 ---
 
