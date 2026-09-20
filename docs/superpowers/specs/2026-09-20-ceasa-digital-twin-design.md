@@ -16,6 +16,18 @@ sejam visíveis acontecendo.
 visual e narrativa de demo, com austeridade e densidade de dados de um sistema
 GovTech real.
 
+### Vocabulário (baseado na operação real do CEASA)
+
+- Quem vende é o **produtor rural** (com credencial), que chega pela **portaria**,
+  passa pela **balança** e faz a **descarga** da mercadoria no box.
+- O box é a unidade de **comercialização**: "disponível/vago" quando livre,
+  "em comercialização" quando ocupado, e "ocorrência CV" em anomalia.
+- Cada produto tem uma **procedência** (município/UF de origem).
+- O relatório usa a linguagem de mercado: **Boletim de Cotações** (preço médio/kg
+  e variação), **oferta** e **ocupação**.
+- Fontes: CeasaMinas (Produtor Rural, Informações de Mercado, Regulamento de
+  Mercado, Mapa Interno).
+
 ### Objetivos
 
 - Exibir uma planta espacial fiel da operação (Setores A e B, rua de circulação,
@@ -150,6 +162,7 @@ type Truck = {
   id: string;             // id único da jornada, ex: "PXR-2A41-1234"
   placa: string;          // placa exibida, ex: "PXR-2A41"
   produto: string;
+  procedencia: string;    // origem do produto, ex: "Petrolina/PE"
   estado: 'chegou' | 'pesando' | 'descarregando' | 'saindo';
   boxId?: string;
   volumeTon: number;
@@ -215,8 +228,8 @@ type WorldState = {
 
 ### 6.2 KPIs superiores
 
-Três cards: **Taxa de Ocupação Geral**, **Boxes com Alerta de Permanência**,
-**Volume Estimado de Descarga (ton)**. Valores animam suavemente na mudança.
+Três cards: **Taxa de Ocupação dos Boxes**, **Boxes com Ocorrência CV**,
+**Volume Ofertado no Turno (ton)**. Valores animam suavemente na mudança.
 
 ### 6.3 Planta espacial (núcleo) — variante "Espinha central"
 
@@ -233,7 +246,7 @@ Três cards: **Taxa de Ocupação Geral**, **Boxes com Alerta de Permanência**,
 ### 6.4 Cores e tokens
 
 - Fundo: `#F5F7FA`; cards: `#FFFFFF` com sombra sutil.
-- Status: Livre `#10B981`, Reservado/Ocupado `#EF4444`, Alerta CV `#F59E0B`.
+- Status: Box disponível `#10B981`, Em comercialização `#EF4444`, Ocorrência CV `#F59E0B`.
 - Texto: `#1F2937`; secundário `#6B7280`; bordas `#E5E7EB`.
 - Tipografia: Inter, sans-serif técnica. Números tabulares nos KPIs e tabelas.
 
@@ -262,8 +275,8 @@ Abre ao clicar em um box, mantendo o mapa visível ao fundo:
 ### 6.8 Relatório (modal central)
 
 - Botão de destaque no topo direito: **📊 Gerar Relatório de Cotações e Ocupação**.
-- Abre modal central com tabela densa: `Box | Produto Principal | Preço Médio/kg |
-  Variação vs. Ontem | Tempo de Ocupação`.
+- Abre modal central com tabela densa: `Box | Produto Principal | Procedência |
+  Preço Médio/kg | Variação vs. Ontem | Tempo de Ocupação`.
 - Variação com cor (alta = vermelho, baixa = verde) e setas.
 - Rodapé: **Exportar PDF** e **Exportar CSV para Secretaria de Abastecimento**.
 - Fecha por botão, `Esc` ou overlay.

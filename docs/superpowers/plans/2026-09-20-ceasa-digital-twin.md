@@ -8,6 +8,13 @@
 
 **Tech Stack:** Vite, React 18, TypeScript, Tailwind CSS v4, Lucide React, Inter (Google Fonts).
 
+> **Nota de vocabulário (pós-implementação):** as descrições de eventos, labels de
+> status/KPIs e o relatório foram ajustados para o vocabulário real do CEASA
+> (produtor rural, portaria, balança, descarga, comercialização, procedência,
+> cotações), conforme o spec. Ver `descriptions.ts`, `KpiRow.tsx`, `BayBox.tsx`,
+> `TruckChip.tsx`, `FloorPlan.tsx`, `BayDrawer.tsx`, `ReportModal.tsx`,
+> `ExportButtons.tsx` e `catalog.ts`.
+
 ---
 
 ## File Structure
