@@ -2,7 +2,7 @@ import { BAY_IDS, PRODUTOS } from './catalog';
 import { nextRandom } from './rng';
 import type { Bay, Event, Kpis, Turno, WorldState } from './types';
 
-export const TURNO_LIMITE_MIN = 360;
+export const TURNO_LIMITE_MIN = 180;
 export const TURNO_DURACAO_MIN = 360;
 
 export function deriveTurno(now: number): Turno {
@@ -113,25 +113,28 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
     case 'UNLOADING_FINISHED': {
       const t = event.truckId ? trucks[event.truckId] : undefined;
       if (t) trucks[t.id] = { ...t, estado: 'saindo' };
-      if (event.boxId && bays[event.boxId]) {
-        const b = bays[event.boxId];
+      const target =
+        (event.truckId ? trucks[event.truckId]?.boxId : undefined) ?? event.boxId;
+      if (target && bays[target]) {
+        applied = { ...event, boxId: target };
+        const b = bays[target];
         const dur = event.simTime - (b.ocupacaoInicio ?? event.simTime);
-        bays[event.boxId] = { ...b, rotatividade: pushSample(b.rotatividade, dur) };
+        bays[target] = { ...b, rotatividade: pushSample(b.rotatividade, dur) };
       }
       break;
     }
     case 'DEPARTED': {
-      if (event.truckId && trucks[event.truckId]) {
-        const rest = { ...trucks };
-        delete rest[event.truckId];
-        return finish(state, rest, bays, event);
-      }
+      const t = event.truckId ? trucks[event.truckId] : undefined;
+      if (t) trucks[t.id] = { ...t, estado: 'saindo' };
       break;
     }
     case 'CLEANING_DONE': {
-      if (event.boxId && bays[event.boxId]) {
-        bays[event.boxId] = {
-          ...bays[event.boxId],
+      const truckBox = event.truckId ? trucks[event.truckId]?.boxId : undefined;
+      const target = truckBox ?? event.boxId;
+      if (target && bays[target]) {
+        applied = { ...event, boxId: target };
+        bays[target] = {
+          ...bays[target],
           status: 'livre',
           produto: undefined,
           truckId: undefined,
@@ -139,6 +142,11 @@ export function applyEvent(state: WorldState, event: Event): WorldState {
           tempoOcupacaoMin: undefined,
           alertaMotivo: undefined,
         };
+      }
+      if (event.truckId && trucks[event.truckId]) {
+        const rest = { ...trucks };
+        delete rest[event.truckId];
+        return finish(state, rest, bays, applied);
       }
       break;
     }

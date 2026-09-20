@@ -29,7 +29,9 @@ export function createJourney(
   r = r5;
   const [g2, r6] = randomInt(r, 8, 15);
   r = r6;
-  const [dur, r7] = randomInt(r, 30, 90);
+  const [longo, rDur] = nextRandom(r);
+  r = rDur;
+  const [dur, r7] = longo < 0.22 ? randomInt(r, 200, 360) : randomInt(r, 30, 90);
   r = r7;
   const [g3, r8] = randomInt(r, 5, 10);
   r = r8;
@@ -75,19 +77,22 @@ export function refillQueue(
   const reserved = new Set(
     q.filter((e) => e.type === 'UNLOADING_STARTED' && e.boxId).map((e) => e.boxId as string),
   );
+  const arrivals = q.filter((e) => e.type === 'TRUCK_ARRIVED').map((e) => e.simTime);
+  let cursor = arrivals.length > 0 ? Math.max(...arrivals) : state.now;
   let lastTime = q.length > 0 ? Math.max(...q.map((e) => e.simTime)) : state.now;
 
-  while (q.filter((e) => e.type === 'TRUCK_ARRIVED').length < 4) {
-    const [gap, r1] = randomInt(r, 4, 18);
+  while (q.filter((e) => e.type === 'TRUCK_ARRIVED').length < 5) {
+    const [gap, r1] = randomInt(r, 3, 12);
     r = r1;
-    const startTime = lastTime + gap;
+    const startTime = cursor + gap;
     const [journey, r2] = createJourney(state, r, startTime, reserved);
     r = r2;
     journey.forEach((e) => {
       if (e.boxId) reserved.add(e.boxId);
     });
     q = [...q, ...journey];
-    lastTime = Math.max(...journey.map((e) => e.simTime));
+    cursor = startTime;
+    lastTime = Math.max(lastTime, ...journey.map((e) => e.simTime));
 
     const [chance, r3] = nextRandom(r);
     r = r3;
